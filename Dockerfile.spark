@@ -1,0 +1,12 @@
+# Sử dụng image Spark 4.1.1 từ Bitnami làm base
+FROM apache/spark:4.1.1
+
+# Chuyển sang user root để cài đặt các thư viện hệ thống và python
+USER root
+
+# Cập nhật pip và cài đặt các thư viện từ requirements.txt
+COPY requirements.txt /tmp/requirements.txt
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
+
+# Chuyển lại về user mặc định của Bitnami (1001) để chạy Spark an toàn
+USER 1001
