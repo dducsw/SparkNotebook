@@ -1,0 +1,4 @@
+v1
+{"path":"file:///mnt/d/myBK/HK252/BigData/BDNotebook/notebook/data/movies_static/part-00000-19a65972-f5bc-42c5-ba58-cd3b9bb9ae4a-c000.json","size":271319,"isDir":false,"modificationTime":1776263572976,"blockReplication":1,"blockSize":33554432,"action":"add"}
+{"path":"file:///mnt/d/myBK/HK252/BigData/BDNotebook/notebook/data/movies_static/part-00001-69f71319-610c-4f62-9d24-a01af2cd75c6-c000.json","size":304490,"isDir":false,"modificationTime":1776263572972,"blockReplication":1,"blockSize":33554432,"action":"add"}
+{"path":"file:///mnt/d/myBK/HK252/BigData/BDNotebook/notebook/data/movies_static/part-00002-a1f53cb8-8c7c-4d07-9184-91699dbf909c-c000.json","size":226190,"isDir":false,"modificationTime":1776263572962,"blockReplication":1,"blockSize":33554432,"action":"add"}
