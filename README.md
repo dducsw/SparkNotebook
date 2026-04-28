@@ -77,3 +77,6 @@ bootstrap_servers = "localhost:9092,localhost:9192,localhost:9292"
 ## 5. Lưu ý quan trọng
 - File `requirements.txt` đã được sửa lỗi `jupyterlab` (trước đó là `jupyter-lab` dẫn đến lỗi cài đặt).
 - Cấu hình KRaft sử dụng **Cluster ID** là `4L69HqvCRN6S3pD6shW6BA`. Nếu bạn xóa volumes và thay đổi ID này, tất cả các node phải được cập nhật đồng bộ.
+
+
+source bdnotebook/bin/activate

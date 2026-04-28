@@ -2,3 +2,5 @@ pyspark==4.1.1
 kagglehub
 confluent-kafka
 jupyterlab
+numpy
+graphframes-py==0.11.0
