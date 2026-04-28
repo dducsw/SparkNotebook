@@ -129,7 +129,7 @@ Edges: 100836 rows
 ### 2.3 Bài tập 1: Check for popularity bias
 
 **Mục tiêu / Yêu cầu:**
-Popularity bias (thiên kiến phổ biến) xảy ra khi một mục phổ biến được đánh giá cao một cách không cân xứng so với chất lượng thực sự của nó. Lấy ví dụ như các bài hát của một ca sĩ nổi tiếng thu hút hàng triệu lượt nghe/xem bất chấp chất lượng, nguyên nhân chủ yếu đến từ việc "cày view" của lực lượng fan trung thành.
+Popularity bias (thiên kiến phổ biến) xảy ra khi một mục phổ biến được đánh giá cao một cách không cân xứng so với chất lượng thực sự của nó. Lấy ví dụ như các bài hát của một ca sĩ nổi tiếng thu hút hàng triệu lượt nghe/xem bất chấp chất lượng, nguyên nhân chủ yếu đến từ việc "cày view" của lực lượng fan trung thành (Hãy nghĩ đến những bài hát của J97 thu hút hàng triệu lượt xem dù chất lượng đều tệ; điều này là do hiện tượng "cày view" từ Đom đóm - những người hâm mộ trung thành của anh Phương Tuấn).
 - **Yêu cầu 1:** Tính toán in-degree của các bộ phim (số lượng người đánh giá riêng biệt - distinct raters) và weighted in-degree (tổng trọng số của các đánh giá).
 - **Yêu cầu 2 (Output):** Xuất ra Top 20 bộ phim theo in-degree và weighted in-degree. Đưa ra 3 nhận xét ngắn gọn (insights) về kết quả thu được.
 
