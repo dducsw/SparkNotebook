@@ -252,33 +252,32 @@ Created genre mapping
 Joined ratings with genres
 Aggregated ratings by genre
 Starting stream output...
+...
 -------------------------------------------
-Batch: 0
+Batch: 3
 -------------------------------------------
-+-----------+-----+
-|genre      |count|
-+-----------+-----+
-|Drama      |4361 |
-|Comedy     |3903 |
-|Action     |3020 |
-|Thriller   |2646 |
-|Adventure  |2416 |
-|Romance    |1812 |
-|Sci-Fi     |1724 |
-|Crime      |1668 |
-|Fantasy    |1183 |
-|Children   |920  |
-|Mystery    |767  |
-|Horror     |729  |
-|Animation  |698  |
-|War        |485  |
-|IMAX       |414  |
-|Musical    |411  |
-|Documentary|122  |
-|Western    |119  |
-|Film-Noir  |87   |
-|(no genres listed)|34   |
-+-----------+-----+
++---------+-----+
+|genre    |count|
++---------+-----+
+|Drama    |178  |
+|Comedy   |131  |
+|Action   |106  |
+|Adventure|105  |
+|Thriller |95   |
+|Romance  |73   |
+|Crime    |70   |
+|Children |61   |
+|Sci-Fi   |54   |
+|Fantasy  |51   |
+|Animation|40   |
+|Mystery  |32   |
+|War      |31   |
+|Musical  |31   |
+|Horror   |21   |
+|Western  |14   |
+|IMAX     |5    |
+|Film-Noir|1    |
++---------+-----+
 only showing top 20 rows
 
 Complete
