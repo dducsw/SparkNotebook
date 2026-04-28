@@ -213,13 +213,21 @@ Tags loaded: 3683 rows
 
 **Mã nguồn:**
 ```python
-df_genres = df_movies.select("movieId", "title", col("genres").alias("genre"))
+from pyspark.sql.functions import split, explode, desc
+
+# Tách chuỗi genres bằng dấu "|" và tạo nhiều dòng cho mỗi thể loại
+df_genres = df_movies.select(
+    "movieId", 
+    "title", 
+    explode(split(col("genres"), "\\|")).alias("genre")
+)
 print("Created genre mapping")
 
 df_ratings_genres = df_ratings_stream.join(df_genres, on="movieId", how="inner")
 print("Joined ratings with genres")
 
-df_genre_agg = df_ratings_genres.groupBy("genre").count()
+# Gom nhóm theo từng thể loại và sắp xếp giảm dần theo lượt rating
+df_genre_agg = df_ratings_genres.groupBy("genre").count().orderBy(desc("count"))
 print("Aggregated ratings by genre")
 
 query = (
@@ -231,7 +239,10 @@ query = (
     .start()
 )
 print("Starting stream output...")
+
+# Chờ 30 giây rồi ép dừng query để giải phóng tài nguyên
 query.awaitTermination(timeout=30)
+query.stop()
 print("Complete")
 ```
 
@@ -244,30 +255,30 @@ Starting stream output...
 -------------------------------------------
 Batch: 0
 -------------------------------------------
-+------------------------------------------+-----+
-|genre                                     |count|
-+------------------------------------------+-----+
-|Action|Adventure|Drama|Fantasy            |204  |
-|Adventure|Sci-Fi|Thriller                 |33   |
-|Comedy|Horror|Thriller                    |115  |
-|Action|Animation|Comedy|Sci-Fi            |7    |
-|Action|Drama|Horror                       |20   |
-|Documentary|Musical|IMAX                  |1    |
-|Animation|Children|Drama|Musical|Romance  |115  |
-|Adventure|Children|Fantasy|Sci-Fi|Thriller|2    |
-|Adventure|Animation                       |2    |
-|Action|Adventure|Drama                    |479  |
-|Adventure|Sci-Fi                          |128  |
-|Adventure|Children|Drama|Fantasy|IMAX     |17   |
-|Comedy|Crime|Horror|Thriller              |2    |
-|Musical|Romance|War                       |9    |
-|Action|Adventure|Fantasy|Romance          |9    |
-|Crime|Drama|Fantasy|Horror|Thriller       |3    |
-|Adventure|Fantasy                         |584  |
-|Comedy|Mystery|Thriller                   |47   |
-|Horror|Romance|Sci-Fi                     |1    |
-|Drama|Film-Noir|Romance                   |33   |
-+------------------------------------------+-----+
++-----------+-----+
+|genre      |count|
++-----------+-----+
+|Drama      |4361 |
+|Comedy     |3903 |
+|Action     |3020 |
+|Thriller   |2646 |
+|Adventure  |2416 |
+|Romance    |1812 |
+|Sci-Fi     |1724 |
+|Crime      |1668 |
+|Fantasy    |1183 |
+|Children   |920  |
+|Mystery    |767  |
+|Horror     |729  |
+|Animation  |698  |
+|War        |485  |
+|IMAX       |414  |
+|Musical    |411  |
+|Documentary|122  |
+|Western    |119  |
+|Film-Noir  |87   |
+|(no genres listed)|34   |
++-----------+-----+
 only showing top 20 rows
 
 Complete
