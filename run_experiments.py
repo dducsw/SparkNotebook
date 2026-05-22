@@ -150,14 +150,19 @@ def main():
     evaluator_f1 = MulticlassClassificationEvaluator(labelCol="label", predictionCol="prediction", metricName="f1")
     f1 = evaluator_f1.evaluate(predictions)
 
-    print(f"AUC: {auc:.4f}")
-    print(f"F1 Score: {f1:.4f}")
-
     # Confusion matrix
     tp = predictions.filter((col("prediction") == 1.0) & (col("label") == 1.0)).count()
     fp = predictions.filter((col("prediction") == 1.0) & (col("label") == 0.0)).count()
     fn = predictions.filter((col("prediction") == 0.0) & (col("label") == 1.0)).count()
     tn = predictions.filter((col("prediction") == 0.0) & (col("label") == 0.0)).count()
+
+    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+    binary_f1 = (2 * precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
+
+    print(f"AUC: {auc:.4f}")
+    print(f"Weighted F1 Score (Multiclass): {f1:.4f}")
+    print(f"Binary F1 Score (Class 1 - Rating >= 4): {binary_f1:.4f}")
 
     print("Confusion Matrix:")
     print(f"               Predicted Negative    Predicted Positive")
@@ -220,17 +225,23 @@ def main():
     # 2. Build Pipeline
     from pyspark.ml.clustering import KMeans
     from pyspark.ml.evaluation import ClusteringEvaluator
+    from pyspark.ml.feature import RegexTokenizer, Normalizer
 
-    tok = Tokenizer(inputCol="movie_tags_text", outputCol="words")
+    # Use RegexTokenizer to filter out extra spaces and empty tags (minTokenLength=1 by default)
+    tok = RegexTokenizer(inputCol="movie_tags_text", outputCol="words", pattern="\\s+")
     rem = StopWordsRemover(inputCol="words", outputCol="filtered_words")
     cv_t = CountVectorizer(inputCol="filtered_words", outputCol="tag_tf")
     idf_t = IDF(inputCol="tag_tf", outputCol="tag_tfidf")
     
     cv_g = CountVectorizer(inputCol="genres_tokens", outputCol="genres_vector")
     
-    assembler_c = VectorAssembler(inputCols=["tag_tfidf", "genres_vector"], outputCol="features")
+    # VectorAssembler aggregates raw features
+    assembler_c = VectorAssembler(inputCols=["tag_tfidf", "genres_vector"], outputCol="raw_features")
+    
+    # Add L2 Normalizer to project features to unit length, preventing singleton clusters
+    normalizer = Normalizer(inputCol="raw_features", outputCol="features", p=2.0)
 
-    preproc_pipeline = Pipeline(stages=[tok, rem, cv_t, idf_t, cv_g, assembler_c])
+    preproc_pipeline = Pipeline(stages=[tok, rem, cv_t, idf_t, cv_g, assembler_c, normalizer])
     preproc_model = preproc_pipeline.fit(movies_with_tags)
     clust_data = preproc_model.transform(movies_with_tags).cache()
 
@@ -333,17 +344,21 @@ def main():
             recs = user_recs_specific['recommendations']
             rec_movie_ids = [r['movieId'] for r in recs]
             
-            # Fetch movie details
+            # Fetch movie details including movieId to sort them correctly
             rec_movies_details = (
                 movies
                 .filter(col("movieId").isin(rec_movie_ids))
-                .select("title", "genres")
+                .select("movieId", "title", "genres")
                 .collect()
             )
             
+            # Map movieId to details row to sort according to Spark recommendations rank
+            movie_map = {row['movieId']: row for row in rec_movies_details}
+            ordered_recs = [movie_map[mid] for mid in rec_movie_ids if mid in movie_map]
+            
             print(f"\nTop 10 Recommendations for User {uid}:")
-            for idx, r_movie in enumerate(rec_movies_details):
-                print(f"  {idx+1}. {r_movie['title']} ({r_movie['genres']})")
+            for idx, r_movie in enumerate(ordered_recs):
+                print(f"  {idx+1:>2}. {r_movie['title']} ({r_movie['genres']})")
                 
     # Stop Spark Session
     spark.stop()

@@ -80,3 +80,5 @@ bootstrap_servers = "localhost:9092,localhost:9192,localhost:9292"
 
 
 source bdnotebook/bin/activate
+
+wsl bash -c "bdnotebook/bin/jupyter nbconvert --execute --inplace notebook/LAB4.ipynb"
